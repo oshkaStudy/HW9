@@ -1,45 +1,47 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import pojo.TransportOrder;
+import pojo.Item;
+import java.io.InputStream;
+import java.util.List;
 
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JsonTest {
 
-    //private static final Gson gson = new Gson();
-
-
-
-    /*
-
     @Test
+    @DisplayName("Проверка JSON-файла на соответствие данных")
     void jsonFileParsingTest() throws Exception {
-        try (Reader reader = new InputStreamReader(
-                cl.getResourceAsStream("glossary.json")
-        )) {
-            JsonObject actual = gson.fromJson(reader, JsonObject.class);
+        ObjectMapper mapper = new ObjectMapper();
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("response.json")) {
+            TransportOrder order = mapper.readValue(is, TransportOrder.class);
 
-            Assertions.assertEquals("example glossary", actual.get("title").getAsString());
-            Assertions.assertEquals(234234, actual.get("ID").getAsInt());
+            //Данные order
+            assertEquals(8374, order.getNumber());
+            assertEquals("b6b3d217-bd1d-4688-980a-f90ac3aa8fb0", order.getOrderId());
+            assertEquals("2025-05-05T07:11:53.363Z", order.getCreated());
 
-            JsonObject inner = actual.get("glossary").getAsJsonObject();
+            //Статус
+            assertEquals(6, order.getStatus().getId());
+            assertEquals("6", order.getStatus().getCode());
+            assertEquals("Требует уточнения", order.getStatus().getName());
 
-            Assertions.assertEquals("SGML", inner.get("SortAs").getAsString());
-            Assertions.assertEquals("Standard Generalized Markup Language", inner.get("GlossTerm").getAsString());
+            //Груз
+            assertEquals(12.000, order.getCargo().getTotalVolume());
+            assertEquals(2.000, order.getCargo().getTotalWeight());
+            assertEquals("Российский рубль", order.getCargo().getTotalPrice().getCurrency());
+            assertEquals(1234.000, order.getCargo().getTotalPrice().getValue());
+
+            //Массив items
+            List<Item> items = order.getItems();
+            assertEquals(2, items.size());
+
+            assertEquals("Изолирующая монолитная муфта ИММ-530-12-ХЛ", items.get(0).getName());
+            assertEquals(12, items.get(0).getQuantity());
+
+            assertEquals("Прожекторная мачта ПМС35м43", items.get(1).getName());
+            assertEquals(7, items.get(1).getQuantity());
         }
     }
-
-    @Test
-    void jsonFileParsingImprovedTest() throws Exception {
-        try (Reader reader = new InputStreamReader(
-                cl.getResourceAsStream("glossary.json")
-        )) {
-            Glossary actual = gson.fromJson(reader, Glossary.class);
-
-            Assertions.assertEquals("example glossary", actual.getTitle());
-            Assertions.assertEquals(234234, actual.getID());
-            Assertions.assertEquals("SGML", actual.getGlossary().getSortAs());
-            Assertions.assertEquals("Standard Generalized Markup Language", actual.getGlossary().getGlossTerm());
-        }
-    }
-*/
-
-
 }

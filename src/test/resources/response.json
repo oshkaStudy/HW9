@@ -1,0 +1,22 @@
+{
+  "number": 8374,
+  "orderId": "b6b3d217-bd1d-4688-980a-f90ac3aa8fb0",
+  "created": "2025-05-05T07:11:53.363Z",
+  "status": {
+    "id": 6,
+    "code": "6",
+    "name": "Требует уточнения"
+  },
+  "cargo": {
+    "totalVolume": 12.000,
+    "totalWeight": 2.000,
+    "totalPrice": {
+      "currency": "Российский рубль",
+      "value": 1234.000
+    }
+  },
+  "items": [
+    { "name": "Изолирующая монолитная муфта ИММ-530-12-ХЛ", "quantity": 12 },
+    { "name": "Прожекторная мачта ПМС35м43", "quantity": 7 }
+  ]
+}
