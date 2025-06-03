@@ -11,21 +11,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FilesHelper {
 
-    public void checkCsvRow(InputStream is, int rowIndex, String ... expectedRowValues) throws Exception {
+    public void checkCsvRow(List<String[]> data, int rowIndex, String ... expectedRowValues) throws Exception {
 
-        try (CSVReader csvReader = new CSVReader(new InputStreamReader(is))) {
-
-            List<String[]> data = csvReader.readAll();
-
-            assertThat(data)
-                    .withFailMessage("CSV-файл содержит меньше строк, чем ожидалось. З" +
+        assertThat(data)
+                .withFailMessage("CSV-файл содержит меньше строк, чем ожидалось. З" +
                             "апрашиваемая строка: %s", rowIndex)
-                    .hasSizeGreaterThan(rowIndex);
+                .hasSizeGreaterThan(rowIndex);
 
-            assertThat(data.get(rowIndex))
-                    .withFailMessage("Строка %s не совпадает с ожидаемой", rowIndex)
-                    .containsExactly(expectedRowValues);
-        }
+        assertThat(data.get(rowIndex))
+                .withFailMessage("Строка %s не совпадает с ожидаемой", rowIndex)
+                .containsExactly(expectedRowValues);
+
     }
 
     public void checkPdfText(InputStream is, String expectedText) throws Exception {

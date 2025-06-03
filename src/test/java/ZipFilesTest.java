@@ -1,7 +1,10 @@
+import com.opencsv.CSVReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,19 +60,14 @@ public class ZipFilesTest {
             boolean csvEntry = false;
 
             while ((entry = zis.getNextEntry()) != null) {
-                String name = entry.getName();
-
-                if (name.endsWith(".csv")) {
+                if (entry.getName().endsWith(".csv")) {
                     csvEntry = true;
 
-                    //Я не уверен, не перемудрил ли я сам себя в этом моменте
-                    //Но в этом месте падает ошибка, т.к. в функции fh.checkCsv команда .readAll(); закрывает стрим
-                    //Поэтому через чатгпт я нашел решение - копирование потока в массив и перевызов для функции
-                    //Если есть более правильное решение - просьба подсказать)
-                    byte[] csvBytes = zis.readAllBytes();
-                    try (InputStream csvIs = new ByteArrayInputStream(csvBytes)) {
-                        fh.checkCsvRow(csvIs, 1, "JUnit 5", "https://junit.org");
-                    }
+                    CSVReader csvReader = new CSVReader(new InputStreamReader(zis));
+                    List<String[]> data = csvReader.readAll();
+
+                    fh.checkCsvRow(data, 1, "JUnit 5", "https://junit.org");
+
                 }
             }
 
@@ -89,9 +87,7 @@ public class ZipFilesTest {
             boolean pdfEntry = false;
 
             while ((entry = zis.getNextEntry()) != null) {
-                String name = entry.getName();
-
-                if (name.endsWith(".pdf")) {
+                if (entry.getName().endsWith(".pdf")) {
                     pdfEntry = true;
                     fh.checkPdfText(zis, "ИТОГО 2804.00");
                 }
@@ -113,9 +109,7 @@ public class ZipFilesTest {
             boolean xlsEntry = false;
 
             while ((entry = zis.getNextEntry()) != null) {
-                String name = entry.getName();
-
-                if (name.endsWith(".xlsx")) {
+                if (entry.getName().endsWith(".xlsx")) {
                     xlsEntry = true;
                     fh.checkXlsCell(zis, 1,5,1,"Километр;");
                 }
